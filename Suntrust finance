@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SunPay Trust</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  font-family: Arial, sans-serif;
+  background:#f2f2f2;
+}
+.container{
+  max-width:550px;
+  margin:30px auto;
+  background:#fff;
+  padding:20px;
+  border-radius:8px;
+}
+.logo{
+  text-align:center;
+  font-size:28px;
+  font-weight:bold;
+  color:#1e50ff;
+  margin-bottom:20px;
+}
+label{
+  font-weight:bold;
+  display:block;
+  margin-top:12px;
+}
+input{
+  width:100%;
+  padding:8px;
+  margin-top:5px;
+}
+.method-btn{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  background:#eef3ff;
+  border:1px solid #1e50ff;
+  color:#1e50ff;
+  font-weight:bold;
+  cursor:pointer;
+}
+.method-box{
+  display:none;
+  margin-top:8px;
+}
+button.send{
+  width:100%;
+  padding:12px;
+  margin-top:20px;
+  background:#1e50ff;
+  color:#fff;
+  border:none;
+  font-size:16px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<div class="logo">SunPay Trust</div>
+
+<label>Recipient Name</label>
+<input id="rname">
+
+<label>Recipient Surname</label>
+<input id="rsurname">
+
+<label>IBAN</label>
+<input id="iban">
+
+<label>Payment Fee</label>
+<input id="fee" placeholder="Enter amount">
+
+<hr>
+
+<button class="method-btn" onclick="showMethod('cash')">CashApp</button>
+<div id="cash" class="method-box">
+  <input id="cashapp" placeholder="CashApp tag">
+</div>
+
+<button class="method-btn" onclick="showMethod('paypal')">PayPal</button>
+<div id="paypal" class="method-box">
+  <input id="pp" placeholder="PayPal email">
+</div>
+
+<button class="method-btn" onclick="showMethod('venmo')">Venmo</button>
+<div id="venmo" class="method-box">
+  <input id="vm" placeholder="Venmo username">
+</div>
+
+<button class="method-btn" onclick="showMethod('gpay')">Google Pay</button>
+<div id="gpay" class="method-box">
+  <input id="gp" placeholder="Google Pay details">
+</div>
+
+<button class="method-btn" onclick="showMethod('apple')">Apple Pay</button>
+<div id="apple" class="method-box">
+  <input id="ap" placeholder="Apple Pay details">
+</div>
+
+<button class="method-btn" onclick="showMethod('payoneer')">Payoneer</button>
+<div id="payoneer" class="method-box">
+  <input id="po" placeholder="Payoneer ID">
+</div>
+
+<hr>
+
+<label>Recipient Email</label>
+<input id="email" type="email">
+
+<button class="send" onclick="sendInvoice()">Send Invoice</button>
+</div>
+
+<script>
+let chosenMethod = "";
+
+function showMethod(id){
+  document.querySelectorAll(".method-box").forEach(b => b.style.display="none");
+  document.getElementById(id).style.display="block";
+  chosenMethod = id;
+}
+
+function sendInvoice(){
+  const fullName = rname.value + " " + rsurname.value;
+  const fee = document.getElementById("fee").value;
+  const email = document.getElementById("email").value;
+
+  if(!email || !fee || !chosenMethod){
+    alert("Please complete all required fields");
+    return;
+  }
+
+  let methodDetail = "";
+  if(chosenMethod === "cash") methodDetail = "CashApp: " + cashapp.value;
+  if(chosenMethod === "paypal") methodDetail = "PayPal: " + pp.value;
+  if(chosenMethod === "venmo") methodDetail = "Venmo: " + vm.value;
+  if(chosenMethod === "gpay") methodDetail = "Google Pay: " + gp.value;
+  if(chosenMethod === "apple") methodDetail = "Apple Pay: " + ap.value;
+  if(chosenMethod === "payoneer") methodDetail = "Payoneer: " + po.value;
+
+  const invoiceText = `
+SUNPAY TRUST
+
+INVOICE
+
+Billed To:
+${fullName}
+
+IBAN:
+${iban.value}
+
+Payment Method:
+${methodDetail}
+
+-------------------------
+
+PAYMENT FEE:
+${fee}
+
+-------------------------
+
+This invoice has been issued by SunPay Trust.
+
+SunPay Trust
+`;
+
+  const gmail =
+    "https://mail.google.com/mail/?view=cm&fs=1" +
+    "&to=" + encodeURIComponent(email) +
+    "&su=" + encodeURIComponent("Invoice – SunPay Trust") +
+    "&body=" + encodeURIComponent(invoiceText);
+
+  window.open(gmail, "_blank");
+}
+</script>
+
+</body>
+</html>
